@@ -4,65 +4,49 @@ using UnityEngine;
 
 public class ThirdPersonMovement : MonoBehaviour
 {
-    [SerializeField] float moveSpeed;
     [HideInInspector] public Vector3 direction;
-    private float _horizontalInput, _verticalInput;
-    CharacterController controller;
 
-    [SerializeField] private float _groundOffset;
-    [SerializeField] private LayerMask groundMask;
-    private Vector3 _spherePos;
+    [SerializeField] private float speed, rotationSpeed, jumpForce;
+    [SerializeField] private Transform target;
+    [SerializeField] private Transform groundPoint;
 
-    [SerializeField] float _gravity = -9.81f;
-    private Vector3 _velocity;
+    static public GameObject playerObject;
+    private float distToGround;
+    private float _moveX, _moveY;
+
+    private Rigidbody _rb;
+    private Animator _anim;
+    public Collider _playerCollider;
     void Start()
     {
-        controller = GetComponent<CharacterController>();
+        playerObject = gameObject.GetComponent<GameObject>();
+        _rb = GetComponent<Rigidbody>();
+        _playerCollider = GetComponent<Collider>();
+        distToGround = _playerCollider.bounds.extents.y;
+        //_anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        GetDirectionAndMove();
-        Gravity();
+        GetDirection();
     }
 
-    void GetDirectionAndMove()
+    void GetDirection()
     {
-        _horizontalInput = Input.GetAxis("Horizontal");
-        _verticalInput = Input.GetAxis("Vertical");
-
-        direction = transform.forward * _verticalInput + transform.right * _horizontalInput;
-
-        controller.Move(direction * moveSpeed * Time.deltaTime);
+        _moveX = Input.GetAxis("Horizontal");
+        _moveY = Input.GetAxis("Vertical");
+        direction = transform.forward * _moveY + transform.right * _moveX;
     }
 
     bool IsGrounded()
     {
-        _spherePos = new Vector3(transform.position.x, transform.position.y - _groundOffset, transform.position.z);
-        if (Physics.CheckSphere(_spherePos, controller.radius - 0.05f, groundMask))
+        if (Physics.Raycast(transform.position, -Vector3.up, (float)(distToGround + 0.1)))
         {
             return true;
         }
         return false;
     }
-    void Gravity()
-    {
-        if(!IsGrounded())
-        {
-            _velocity.y += _gravity * Time.deltaTime;
-        }
-        else if(_velocity.y < 0)
-        {
-            _velocity.y = -2;
-        }
 
-        controller.Move(_velocity * Time.deltaTime);
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(_spherePos, controller.radius - 0.05f);
-    }
 }
+
