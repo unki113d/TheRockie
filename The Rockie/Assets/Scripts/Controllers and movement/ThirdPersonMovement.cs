@@ -7,15 +7,17 @@ public class ThirdPersonMovement : MonoBehaviour
     [HideInInspector] public Vector3 direction;
 
     [SerializeField] private float speed, rotationSpeed, jumpForce;
-/*    [SerializeField] private Transform target;
-    [SerializeField] private Transform groundPoint;*/
+/*  
+ *  [SerializeField] private Transform target;
+ *  [SerializeField] private Transform groundPoint;
+*/
 
     static public GameObject playerObject;
     private float distToGround;
     public float _moveX, _moveY;
 
     private Rigidbody _rb;
-    //private Animator _anim;
+    private Animator _anim;
     public Collider _playerCollider;
     void Start()
     {
@@ -23,7 +25,7 @@ public class ThirdPersonMovement : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _playerCollider = GetComponent<Collider>();
         distToGround = _playerCollider.bounds.extents.y;
-        //_anim = GetComponent<Animator>();
+        _anim = GetComponentInChildren<Animator>();
     }
 
     // Update is called once per frame
