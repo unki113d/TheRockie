@@ -34,8 +34,14 @@ public class ThirdPersonMovement : MonoBehaviour
         _moveX = Input.GetAxis("Horizontal");
         _moveY = Input.GetAxis("Vertical");
         PhysicalMove();
+        CheckAnim();
     }
 
+    void CheckAnim()
+    {
+        _anim.SetFloat("InputX", _moveX);
+        _anim.SetFloat("InputY", _moveY);
+    }
     void PhysicalMove()
     {
         Vector3 physicsMove = transform.forward * _moveY * speed + transform.right * _moveX * speed;
